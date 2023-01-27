@@ -2,7 +2,7 @@ import { nanoid } from 'nanoid';
 import React, { Component } from 'react';
 import { ContactForm } from './ContactForm/ContactForm';
 import { ContactList } from './ContactList/ContactList';
-import css from './App.module.css'
+import css from './App.module.css';
 
 import { Filter } from './Filter/filter';
 
@@ -30,8 +30,7 @@ export class App extends Component {
     };
 
     if (this.state.contacts.find(contact => contact.name === name)) {
-      console.log(contact.name);
-      alert(`${name.value}is already in contacts`);
+      alert(`${contact.name}is already in contacts`);
       return;
     }
 
@@ -42,7 +41,7 @@ export class App extends Component {
     this.setState(prev => ({ contacts: [...prev.contacts, newContact] }));
   };
 
-  filteredContacts = () => {
+  filterContactsByName = () => {
     if (this.state.filter === '') return this.state.contacts;
     return this.state.contacts.filter(({ name }) =>
       name.toLowerCase().includes(this.state.filter.toLowerCase())
@@ -54,7 +53,19 @@ export class App extends Component {
       contacts: prevState.contacts.filter(contact => contact.id !== id),
     }));
 
+  componentDidMount() {
+    const getContacts = JSON.parse(localStorage.getItem('contacts'));
+    getContacts && this.setState({ contacts: getContacts });
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.contacts !== this.state.contacts) {
+      localStorage.setItem('contacts', JSON.stringify(this.state.contacts));
+    }
+  }
+
   render() {
+    const filteredContacts = this.filterContactsByName();
     return (
       <div className={css.phonebook}>
         <h1 className={css.title}>Phonebook</h1>
@@ -65,7 +76,7 @@ export class App extends Component {
           <>
             <Filter onChange={this.handleFilterChange} />
             <ContactList
-              filteredContacts={this.filteredContacts}
+              filteredContacts={filteredContacts}
               onDelete={this.onDelete}
             />
           </>

@@ -5,7 +5,7 @@ import css from './ContactList.module.css'
 export const ContactList = ({ filteredContacts, onDelete }) => {
   return (
     <ul className={css.list}>
-      {filteredContacts().map(({ name, id, number }) => {
+      {filteredContacts.map(({ name, id, number }) => {
         const deleteContact = () => {
           onDelete(id);
         };
@@ -23,6 +23,6 @@ export const ContactList = ({ filteredContacts, onDelete }) => {
 };
 
 ContactList.propTypes = {
-  filteredContacts: PropTypes.func.isRequired,
+  filteredContacts: PropTypes.array.isRequired,
   onDelete: PropTypes.func.isRequired,
 };
